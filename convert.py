@@ -10,7 +10,7 @@ DEFAULT_BOT = "ualberta"
 def get_source_files(bot_name):
     source_files = []
 
-    for root, dirs, files in os.walk("./bot_sources/" + bot_name):
+    for root, dirs, files in os.walk("./{}/{}".format(BOT_DIR, DEFAULT_BOT)):
         for f in files:
             if f.endswith(".cpp"):
                 source_files.append(os.path.join(root, f))
@@ -31,6 +31,6 @@ if __name__ == "__main__":
     for filename in files[:2]:
         old = None
         with open(filename, 'r') as fp:
-            old_file = fp.read()
+            old = fp.read()
         new = convert(old)
         print(new)
