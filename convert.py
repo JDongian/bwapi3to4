@@ -19,7 +19,8 @@ def get_source_files(bot_name):
 
 
 def convert(source):
-    return source
+    modified = simple_replace(source)
+    return modified
 
 
 if __name__ == "__main__":
@@ -34,3 +35,6 @@ if __name__ == "__main__":
             old = fp.read()
         new = convert(old)
         print(new)
+        outputFile = filename.replace("./{}".format(BOT_DIR), "./converted")
+        print(outputFile)
+        # Find out how to save to file
