@@ -1,11 +1,12 @@
 def simple_replace(source):
-    source.replace("isWalkable", "isAccessible")
-    source.replace(".x()", ".x")
-    source.replace(".y()", ".y")
-    source.replace("groundWeaponMaxRange", "weaponMaxRange")
-    source.replace("airWeaponMaxRange", "weaponMaxRange")
-    source.replace("groundWeaponDamageCooldown", "weaponDamageCooldown")
-    source.replace("energyUsed", "energyCost")
+    source = source.replace("isWalkable", "isAccessible")
+    source = source.replace(".x()", ".x")
+    source = source.replace(".y()", ".y")
+    source = source.replace("groundWeaponMaxRange", "weaponMaxRange")
+    source = source.replace("airWeaponMaxRange", "weaponMaxRange")
+    source = source.replace("groundWeaponDamageCooldown", "weaponDamageCooldown")
+    source = source.replace("energyUsed", "energyCost")
+    return source
 
 def warn_issues(filename):
     with open(filename) as myFile:
@@ -24,5 +25,4 @@ def manual_fix(filename):
         for num, line in enumerate(fp, 1):
             for func in deprecated_functions:
                 if func in line:
-                    print("{line}: {func} is deprecated.".format(line=num,
-                                                                 func=func))
+                    print("{line}: {func} is deprecated.".format(line=num, func=func))
