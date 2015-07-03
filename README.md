@@ -1,6 +1,18 @@
 # bwapi3to4
 Migration scripts for converting BWAPI 3 source to BWAPI 4 source
 
+##Usage##
+
+Python3 is recommended. Python2 support and a Windows executable are planned, but functionality has priority over portability.
+
+Usage: `python3 <PATH_IN> <PATH_OUT>`
+
+Example:
+
+```
+$ python3 ../ualbertabot/ ../ualbertabot2/
+```
+
 ###TODO###
 
 **Changes in BWAPI 4.1.2**
