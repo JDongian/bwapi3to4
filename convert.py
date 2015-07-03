@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 from __future__ import print_function
-import os
-from sys import argv
 from changes import simple_replace, warn_issues, manual_fix
+import shutil
+from sys import argv
+import os
 import re
 
 # Python 2/3 compatibility
@@ -10,6 +11,8 @@ try:
     input = raw_input
 except NameError:
     pass
+
+CPP_EXTENSIONS = ('.cpp', '.h', '.hpp')
 
 
 def _yesno(message, default='no', suffix=' '):
@@ -44,14 +47,16 @@ def _yesno(message, default='no', suffix=' '):
                     return False
 
 
-def get_source_files(path):
-    """Given a path name, grab all .cpp files in that directory, recursively."""
+def get_paths(path, extensions):
+    """Recursively search a path for files with some extension."""
     source_files = []
 
     for root, dirs, files in os.walk(path):
         for f in files:
-            if f.endswith(".cpp"):
-                source_files.append(os.path.join(root, f))
+            for extension in extensions:
+                if f.endswith(extension):
+                    source_files.append(os.path.join(root, f))
+                    break
 
     return source_files
 
@@ -64,18 +69,14 @@ def convert(source):
 
 def save_converted_files(files, old_root, new_root):
     """Save files from old_root into new_root."""
-    if os.path.exists(new_root) and\
-       _yesno("Warning: output directory already exists. Continue?"):
-        exit(0)
-        print("Not writing files into existing directory. Quitting.")
-
     bot_directories = []
     new_files_and_paths = []
+
     for old_path, new_file in files:
         rel_path = os.path.relpath(old_path, old_root)
         new_path = os.path.join(new_root, rel_path)
         new_dir = os.path.dirname(new_path)  # May not be a new directory.
-        print("{} \t-> \t{}".format(old_path, new_path))
+        print("{}\t->\t{}".format(old_path, new_path))
 
         bot_directories.append(new_dir)
         new_files_and_paths.append((new_path, new_file))
@@ -97,14 +98,24 @@ if __name__ == "__main__":
     old_root = argv[1]
     new_root = argv[2]
 
-    files = get_source_files(old_root)
-    converted_files = []
+    source_file_paths = get_paths(old_root, CPP_EXTENSIONS)
+    old_paths_and_new_sources = []
 
-    for filename in files:
-        old = None
-        with open(filename, 'r') as fp:
-            old = fp.read()
-        new = convert(old)
-        converted_files.append((filename, new))
+    for path in source_file_paths:
+        old_source = None
+        with open(path, 'r') as fp:
+            old_source = fp.read()
+        new_source = convert(old_source)
+        old_paths_and_new_sources.append((path, new_source))
 
-    save_converted_files(converted_files, old_root, new_root)
+    if new_root == old_root:
+        if _yesno("Warning: output directory matches input directory. Continue?", "no"):
+            print("Not writing files in place. QUITTING.")
+            exit(0)
+    else:
+        if os.path.exists(new_root):
+            print("Error: output directory already exists. QUITTING.")
+            exit(-1)
+
+    shutil.copytree(old_root, new_root)
+    save_converted_files(old_paths_and_new_sources, old_root, new_root)
