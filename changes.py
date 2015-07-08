@@ -6,6 +6,7 @@ def simple_replace(source):
     source = source.replace("airWeaponMaxRange", "weaponMaxRange")
     source = source.replace("groundWeaponDamageCooldown", "weaponDamageCooldown")
     source = source.replace("energyUsed", "energyCost")
+    source = source.replace("setReplayVision", "setVision")
     return source
 
 def warn_issues(filename):
@@ -18,7 +19,7 @@ def warn_issues(filename):
             # Parameters changed from build(Unit, TilePosition) to build(
 
 def manual_fix(filename):
-    deprecated_functions = ["getScreenBuffer", "setReplayVision",
+    deprecated_functions = ["getScreenBuffer",
                             "changeRace", "startGame",
                             "getUpgradeLevel"]
     with open(filename) as fp:
